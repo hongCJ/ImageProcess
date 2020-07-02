@@ -15,6 +15,12 @@
 		EC4EF08924AC8B3800420869 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EC4EF08724AC8B3800420869 /* LaunchScreen.storyboard */; };
 		EC4EF09424AC8B3900420869 /* ImageProcessTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4EF09324AC8B3900420869 /* ImageProcessTests.swift */; };
 		EC4EF09F24AC8B3900420869 /* ImageProcessUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4EF09E24AC8B3900420869 /* ImageProcessUITests.swift */; };
+		EC4EF0AD24AC8CAB00420869 /* OIP.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = EC4EF0AC24AC8CAB00420869 /* OIP.jpeg */; };
+		EC4EF0AF24AC8CC300420869 /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4EF0AE24AC8CC300420869 /* Util.swift */; };
+		ECE3A0B724AD713F0061A6B9 /* color.jpg in Resources */ = {isa = PBXBuildFile; fileRef = ECE3A0B624AD713F0061A6B9 /* color.jpg */; };
+		ECE3A0B924AD89380061A6B9 /* ConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE3A0B824AD89380061A6B9 /* ConfigViewController.swift */; };
+		ECE3A0BB24AD8B0D0061A6B9 /* ImageProcesser.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE3A0BA24AD8B0D0061A6B9 /* ImageProcesser.swift */; };
+		ECE3A0BD24ADC7050061A6B9 /* ImageBinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE3A0BC24ADC7050061A6B9 /* ImageBinder.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +55,12 @@
 		EC4EF09A24AC8B3900420869 /* ImageProcessUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ImageProcessUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC4EF09E24AC8B3900420869 /* ImageProcessUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageProcessUITests.swift; sourceTree = "<group>"; };
 		EC4EF0A024AC8B3900420869 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		EC4EF0AC24AC8CAB00420869 /* OIP.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = OIP.jpeg; sourceTree = "<group>"; };
+		EC4EF0AE24AC8CC300420869 /* Util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Util.swift; sourceTree = "<group>"; };
+		ECE3A0B624AD713F0061A6B9 /* color.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = color.jpg; sourceTree = "<group>"; };
+		ECE3A0B824AD89380061A6B9 /* ConfigViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigViewController.swift; sourceTree = "<group>"; };
+		ECE3A0BA24AD8B0D0061A6B9 /* ImageProcesser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageProcesser.swift; sourceTree = "<group>"; };
+		ECE3A0BC24ADC7050061A6B9 /* ImageBinder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageBinder.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,10 +114,16 @@
 				EC4EF07C24AC8B3700420869 /* AppDelegate.swift */,
 				EC4EF07E24AC8B3700420869 /* SceneDelegate.swift */,
 				EC4EF08024AC8B3700420869 /* ViewController.swift */,
+				ECE3A0B624AD713F0061A6B9 /* color.jpg */,
+				EC4EF0AC24AC8CAB00420869 /* OIP.jpeg */,
 				EC4EF08224AC8B3700420869 /* Main.storyboard */,
 				EC4EF08524AC8B3800420869 /* Assets.xcassets */,
 				EC4EF08724AC8B3800420869 /* LaunchScreen.storyboard */,
 				EC4EF08A24AC8B3800420869 /* Info.plist */,
+				EC4EF0AE24AC8CC300420869 /* Util.swift */,
+				ECE3A0B824AD89380061A6B9 /* ConfigViewController.swift */,
+				ECE3A0BA24AD8B0D0061A6B9 /* ImageProcesser.swift */,
+				ECE3A0BC24ADC7050061A6B9 /* ImageBinder.swift */,
 			);
 			path = ImageProcess;
 			sourceTree = "<group>";
@@ -232,7 +250,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EC4EF0AD24AC8CAB00420869 /* OIP.jpeg in Resources */,
 				EC4EF08924AC8B3800420869 /* LaunchScreen.storyboard in Resources */,
+				ECE3A0B724AD713F0061A6B9 /* color.jpg in Resources */,
 				EC4EF08624AC8B3800420869 /* Assets.xcassets in Resources */,
 				EC4EF08424AC8B3700420869 /* Main.storyboard in Resources */,
 			);
@@ -262,6 +282,10 @@
 				EC4EF08124AC8B3700420869 /* ViewController.swift in Sources */,
 				EC4EF07D24AC8B3700420869 /* AppDelegate.swift in Sources */,
 				EC4EF07F24AC8B3700420869 /* SceneDelegate.swift in Sources */,
+				ECE3A0B924AD89380061A6B9 /* ConfigViewController.swift in Sources */,
+				ECE3A0BB24AD8B0D0061A6B9 /* ImageProcesser.swift in Sources */,
+				ECE3A0BD24ADC7050061A6B9 /* ImageBinder.swift in Sources */,
+				EC4EF0AF24AC8CC300420869 /* Util.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
