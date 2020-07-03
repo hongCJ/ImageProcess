@@ -20,6 +20,9 @@ class ConfiViewController: UIViewController {
         oldStepper = value
     }
     @IBAction func gray(_ sender: Any) {
-       _ = ProcesserBinder.shared.processer?.gray()
+        ProcesserBinder.shared.processer?.Accelerate_gray()
+    }
+    @IBAction func reset(_ sender: Any) {
+        ProcesserBinder.shared.reset();
     }
 }
