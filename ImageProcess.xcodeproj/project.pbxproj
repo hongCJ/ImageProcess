@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EC1470BA24B0822900B0931C /* ImageOperator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1470B924B0822900B0931C /* ImageOperator.swift */; };
 		EC4EF07D24AC8B3700420869 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4EF07C24AC8B3700420869 /* AppDelegate.swift */; };
 		EC4EF07F24AC8B3700420869 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4EF07E24AC8B3700420869 /* SceneDelegate.swift */; };
 		EC4EF08124AC8B3700420869 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4EF08024AC8B3700420869 /* ViewController.swift */; };
@@ -22,7 +23,6 @@
 		ECE3A0B924AD89380061A6B9 /* ConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE3A0B824AD89380061A6B9 /* ConfigViewController.swift */; };
 		ECE3A0BB24AD8B0D0061A6B9 /* ImageProcesser.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE3A0BA24AD8B0D0061A6B9 /* ImageProcesser.swift */; };
 		ECE3A0BD24ADC7050061A6B9 /* ImageBinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE3A0BC24ADC7050061A6B9 /* ImageBinder.swift */; };
-		ECE3A0BF24ADE4730061A6B9 /* AccelerateProcess.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE3A0BE24ADE4730061A6B9 /* AccelerateProcess.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -43,6 +43,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		EC1470B924B0822900B0931C /* ImageOperator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageOperator.swift; sourceTree = "<group>"; };
 		EC4EF07924AC8B3700420869 /* ImageProcess.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImageProcess.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC4EF07C24AC8B3700420869 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		EC4EF07E24AC8B3700420869 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -64,7 +65,6 @@
 		ECE3A0B824AD89380061A6B9 /* ConfigViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigViewController.swift; sourceTree = "<group>"; };
 		ECE3A0BA24AD8B0D0061A6B9 /* ImageProcesser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageProcesser.swift; sourceTree = "<group>"; };
 		ECE3A0BC24ADC7050061A6B9 /* ImageBinder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageBinder.swift; sourceTree = "<group>"; };
-		ECE3A0BE24ADE4730061A6B9 /* AccelerateProcess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccelerateProcess.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -127,8 +127,8 @@
 				EC4EF0AE24AC8CC300420869 /* Util.swift */,
 				ECE3A0B824AD89380061A6B9 /* ConfigViewController.swift */,
 				ECE3A0BA24AD8B0D0061A6B9 /* ImageProcesser.swift */,
+				EC1470B924B0822900B0931C /* ImageOperator.swift */,
 				EC7691EB24AF7FCA00DCDB66 /* vImageBuffer+Extension.swift */,
-				ECE3A0BE24ADE4730061A6B9 /* AccelerateProcess.swift */,
 				ECE3A0BC24ADC7050061A6B9 /* ImageBinder.swift */,
 			);
 			path = ImageProcess;
@@ -287,13 +287,13 @@
 			files = (
 				EC4EF08124AC8B3700420869 /* ViewController.swift in Sources */,
 				EC4EF07D24AC8B3700420869 /* AppDelegate.swift in Sources */,
-				ECE3A0BF24ADE4730061A6B9 /* AccelerateProcess.swift in Sources */,
 				EC4EF07F24AC8B3700420869 /* SceneDelegate.swift in Sources */,
 				ECE3A0B924AD89380061A6B9 /* ConfigViewController.swift in Sources */,
 				EC7691EC24AF7FCA00DCDB66 /* vImageBuffer+Extension.swift in Sources */,
 				ECE3A0BB24AD8B0D0061A6B9 /* ImageProcesser.swift in Sources */,
 				ECE3A0BD24ADC7050061A6B9 /* ImageBinder.swift in Sources */,
 				EC4EF0AF24AC8CC300420869 /* Util.swift in Sources */,
+				EC1470BA24B0822900B0931C /* ImageOperator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

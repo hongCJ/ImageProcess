@@ -17,17 +17,9 @@ class ViewController: UIViewController {
         imageView.contentMode = .scaleAspectFit
         imageView.center = view.center
         view.addSubview(imageView)
-        loadImage()
-    }
-    
-    func loadImage() {
-        guard let img = UIImage.loadFromBundle(name: "color", type: "jpg") else {
-            return
-        }
-        ProcesserBinder.shared.image = img
         ProcesserBinder.shared.bind(imageView: imageView)
     }
-    
+
     
 }
 

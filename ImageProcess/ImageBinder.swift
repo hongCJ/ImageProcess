@@ -12,32 +12,16 @@ class ProcesserBinder {
     
     static let shared = ProcesserBinder()
     
-    private var _image: UIImage?
-    
-    var image: UIImage? {
-        set {
-            _image = newValue
-            if let cgimage = newValue?.cgImage {
-                processer = ImageProcesser(image: cgimage)
-            }
-            if let view = imageView {
-                view.image = image
-            }
-        }
-        get {
-            return _image
-        }
-    }
     
     private var imageView: UIImageView?
     
-    private(set) var processer: ImageProcesser?
+    private(set) var processer = ImageProcesser()
     
     var size: CGSize {
-        guard let img = _image else {
+        guard let img = imageView?.image?.cgImage else {
             return .zero
         }
-        return img.size
+        return CGSize(width: img.width, height: img.height)
     }
     
     init() {
@@ -47,7 +31,7 @@ class ProcesserBinder {
     }
     
     private func updateImageView() {
-        if let img = processer?.image {
+        if let img = processer.image {
             let newImage = UIImage(cgImage: img)
             imageView?.image = newImage
         }
@@ -56,12 +40,6 @@ class ProcesserBinder {
     
     func bind(imageView: UIImageView) {
         self.imageView = imageView
-        imageView.image = image
     }
-    
-    func reset() {
-        self.image = _image
-    }
-    
     
 }

@@ -8,66 +8,25 @@
 
 import UIKit
 
-struct CellData {
-    var title: String
-    var sel: Selector
-}
-
-enum ProcessType {
-    case scale(Float)
-    case blur(Float)
-    case blur2(Float)
-    case bright(UInt8)
-    case dark(UInt8)
-    case gray
-    case reset
-    case translate(CGPoint)
-    case rotate(Float)
-}
-
-extension ProcessType {
-    func title() -> String {
-        switch self {
-        case .scale(let x):
-            let str = x > 1 ? "big" : "small"
-            return "scale \(str)"
-        case .blur(_):
-            return "blur black"
-        case .blur2(_):
-            return "blur filter"
-        case .bright(_):
-            return "bright image"
-        case .dark(_):
-            return "dark image"
-        case .gray:
-            return "gray image"
-        case .reset:
-            return "reset image"
-        case .translate(let point):
-            return "translate x: \(point.x) y: \(point.y)"
-        case .rotate(let x):
-            return "rotate \(x)"
-        }
-    }
-}
-
 class ConfiViewController: UIViewController {
     
-    var data: [ProcessType] = []
+    var data: [ImageOperator] = []
     override func viewDidLoad() {
         super.viewDidLoad()
-        data = [
-            .scale(1.2),
-            .scale(0.8),
-            .blur(5),
-            .blur2(5),
-            .bright(8),
-            .dark(8),
-            .gray,
-            .reset,
-            .translate(CGPoint.init(x: 100, y: 100)),
-            .rotate(-90.0)
-        ]
+        data = [GrayOperator(), RotateOperator(angle: 45.0), TranslateOperator(x: 200, y: 100)]
+        data.append(BlurInPlaceOperator(rect: CGRect(x: 100, y: 100, width: 200, height: 200), matrix: [
+        0.0722, 0.0722, 0.0722, 0,
+        0.7152, 0.7152, 0.7152, 0,
+        0.2126, 0.2126, 0.2126, 0,
+        0,      0,      0,      1
+        ]))
+        data.append(BlurOutPlaceOperator(rect: CGRect(x: 100, y: 100, width: 300, height: 300), width: 4))
+        data.append(ScaleOperator(scale: 1.2))
+        data.append(ScaleOperator(scale: 0.8))
+        if let img = UIImage.loadFromBundle(name: "color", type: "jpg"), let cgImage = img.cgImage {
+            data.append(BufferProvider(image: cgImage))
+        }
+        data.append(contentsOf: [BrightnessOperator(light: 6), BrightnessOperator(light: -7)])
     }
 }
 
@@ -81,37 +40,14 @@ extension ConfiViewController: UITableViewDataSource {
         if cell == nil {
             cell = UITableViewCell(style: .default, reuseIdentifier: "cell")
         }
-        cell?.textLabel?.text = data[indexPath.row].title()
+        cell?.textLabel?.text = data[indexPath.row].debugDescription
         return cell!
     }
 }
 
 extension ConfiViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let item = data[indexPath.row]
-        switch item {
-        case .scale(let x):
-            ProcesserBinder.shared.processer?.scale(scale: x)
-        case .blur(_):
-            let rect = ProcesserBinder.shared.size
-            
-            ProcesserBinder.shared.processer?.blur(rect: CGRect.init(x: rect.width / 4, y:rect.height / 4, width: rect.width / 2, height: rect.height/2))
-        case .blur2(_):
-            let rect = ProcesserBinder.shared.size
-            
-            ProcesserBinder.shared.processer?.blur2(rect: CGRect.init(x: rect.width / 4, y:rect.height / 4, width: rect.width / 2, height: rect.height/2))
-        case .bright(let x):
-            ProcesserBinder.shared.processer?.lighten(by: x)
-        case .dark(let x):
-            ProcesserBinder.shared.processer?.darken(by: x)
-        case .gray:
-            ProcesserBinder.shared.processer?.gray()
-        case .reset:
-            ProcesserBinder.shared.reset()
-        case .translate(let p):
-            ProcesserBinder.shared.processer?.translate(offSet: p)
-        case .rotate(let x):
-            ProcesserBinder.shared.processer?.rotate(angle: x)
-        }
+        let ope = data[indexPath.row]
+        ProcesserBinder.shared.processer.performOperator(imageOperator: ope)
     }
 }
