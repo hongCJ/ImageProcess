@@ -53,49 +53,28 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stepper opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="100" maximumValue="200" translatesAutoresizingMaskIntoConstraints="NO" id="iYk-H4-doL">
-                                <rect key="frame" x="116" y="116" width="94" height="32"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="ykL-KS-KV4">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="808"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <connections>
-                                    <action selector="stepperChanged:" destination="GvH-qk-NpP" eventType="valueChanged" id="Ydk-Gy-40l"/>
+                                    <outlet property="dataSource" destination="GvH-qk-NpP" id="DKV-EE-1Op"/>
+                                    <outlet property="delegate" destination="GvH-qk-NpP" id="jah-uj-Qmz"/>
                                 </connections>
-                            </stepper>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Igz-st-Z59">
-                                <rect key="frame" x="60" y="238" width="39" height="36"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
-                                <state key="normal" title="gray"/>
-                                <connections>
-                                    <action selector="gray:" destination="GvH-qk-NpP" eventType="touchUpInside" id="zKv-Ru-Foo"/>
-                                </connections>
-                            </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="亮度" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0Sn-Cw-5f9">
-                                <rect key="frame" x="53" y="122" width="35" height="21"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6na-VL-pu3">
-                                <rect key="frame" x="68" y="303" width="44" height="36"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
-                                <state key="normal" title="reset"/>
-                                <connections>
-                                    <action selector="reset:" destination="GvH-qk-NpP" eventType="touchUpInside" id="baK-HB-0rL"/>
-                                </connections>
-                            </button>
+                            </tableView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="ykL-KS-KV4" firstAttribute="top" secondItem="7XI-2W-v42" secondAttribute="top" id="53k-Xo-sak"/>
+                            <constraint firstItem="7XI-2W-v42" firstAttribute="bottom" secondItem="ykL-KS-KV4" secondAttribute="bottom" id="UOt-6p-tMb"/>
+                            <constraint firstAttribute="trailing" secondItem="ykL-KS-KV4" secondAttribute="trailing" id="d0w-jq-ge7"/>
+                            <constraint firstItem="ykL-KS-KV4" firstAttribute="leading" secondItem="7XI-2W-v42" secondAttribute="leading" id="g7E-Lm-PUn"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="7XI-2W-v42"/>
                     </view>
-                    <connections>
-                        <outlet property="stepepr" destination="iYk-H4-doL" id="IuY-Je-u8T"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="CW9-Te-AWQ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-301" y="137"/>
+            <point key="canvasLocation" x="-301.44927536231887" y="136.60714285714286"/>
         </scene>
     </scenes>
 </document>

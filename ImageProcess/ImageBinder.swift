@@ -33,6 +33,13 @@ class ProcesserBinder {
     
     private(set) var processer: ImageProcesser?
     
+    var size: CGSize {
+        guard let img = _image else {
+            return .zero
+        }
+        return img.size
+    }
+    
     init() {
         NotificationCenter.default.addObserver(forName: imageChangeNotification, object: nil, queue: OperationQueue.main) { _ in
             self.updateImageView()
