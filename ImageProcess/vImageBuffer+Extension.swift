@@ -7,6 +7,22 @@
 //
 
 import Accelerate
+import simd
+
+extension Array where Element == Float {
+    func simd3() -> simd_float3 {
+        assert(count == 3, "error count")
+        return simd_float3(self[0], self[1], self[2])
+    }
+    
+    func simd33() -> simd_float3x3 {
+        assert(count == 9, "error count")
+        let c0 = simd_float3(self[0], self[3], self[6])
+        let c1 = simd_float3(self[1], self[4], self[7])
+        let c2 = simd_float3(self[2], self[5], self[8])
+        return simd_float3x3(columns: (c0, c1, c2))
+    }
+}
 
 extension vImage_Buffer {
     func isSubRect(rect: CGRect) -> Bool {

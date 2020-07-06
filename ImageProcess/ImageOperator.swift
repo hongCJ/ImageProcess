@@ -142,23 +142,38 @@ struct RotateOperator: ImageOperator {
         let hw = width / 2
         let hh = height / 2
         
+        let new_w = ceil(abs(width * cosValue) + abs(height * sinValue));
+        let new_h = ceil(abs(width * cosValue) + abs(height * sinValue));
+               
         
-        let forwardMatrix = simd_matrix(simd_float3(arrayLiteral: 1, 0, -hw), simd_float3(arrayLiteral: 0, -1, -hh), simd_float3(arrayLiteral: 0, 0, 1))
         
-        let backMatrix = simd_matrix(simd_float3(arrayLiteral: 1, 0, hw), simd_float3(arrayLiteral: 0, -1, -hh), simd_float3(arrayLiteral: 0, 0, 1))
+        let forwardMatrix = [
+            1, 0, 0,
+            0, 1, 0,
+            -hw, -hh, 1
+        ].simd33()
         
-        let transforMatrix = simd_matrix(simd_float3(x: cosValue, y: sinValue, z: 0), simd_float3(x: -sinValue, y: cosValue, z: 0), simd_float3(x: 0, y: 0, z: 1))
+        let backMatrix = [
+            1, 0, 0,
+            0, 1, 0,
+            new_w / 2, new_h / 2, 1
+        ].simd33()
+        
+        let transforMatrix = [
+            cosValue, -sinValue, 0,
+            sinValue, cosValue, 0,
+            0, 0, 1
+        ].simd33()
         
         let finaleMatrix = forwardMatrix * transforMatrix * backMatrix
         
         let c0 = finaleMatrix.columns.0
         let c1 = finaleMatrix.columns.1
         
-//        var bufferTranform = vImage_AffineTransform(a: c0.x, b: c1.x, c: c0.y, d: c1.y, tx: c0.z, ty: c1.z)
-        var bufferTranform = vImage_AffineTransform(a: 1, b: 0, c: 0, d: 1, tx: 30, ty: 30)
+        var bufferTranform = vImage_AffineTransform(a: c0.x, b: c1.x, c: c0.y, d: c1.y, tx: c0.z, ty: c1.z)
         
-        let new_w = buffer.width //ceil(abs(width * cosValue) + abs(height * sinValue));
-        let new_h = buffer.height//ceil(abs(width * cosValue) + abs(height * sinValue));
+       
+        
         
         guard var destinationBuffer = try? vImage_Buffer(width: Int(new_w), height: Int(new_h), bitsPerPixel: format.bitsPerPixel) else {
             return ImageMakeBufferError

@@ -51,3 +51,14 @@ struct GammaOperator: ImageOperator {
         return .success
     }
 }
+
+struct AlphaOperator: ImageOperator {
+    var debugDescription: String {
+        return "alpha ope\rator"
+    }
+    
+    func operateImage(buffer: inout vImage_Buffer, format: inout vImage_CGImageFormat) -> ImageResult {
+//        vImageAlphaBlend_ARGB8888(<#T##srcTop: UnsafePointer<vImage_Buffer>##UnsafePointer<vImage_Buffer>#>, <#T##srcBottom: UnsafePointer<vImage_Buffer>##UnsafePointer<vImage_Buffer>#>, <#T##dest: UnsafePointer<vImage_Buffer>##UnsafePointer<vImage_Buffer>#>, <#T##flags: vImage_Flags##vImage_Flags#>)
+        return .success
+    }
+}

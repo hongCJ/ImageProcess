@@ -67,5 +67,7 @@ extension ConfiViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let ope = data[indexPath.row]
         ProcesserBinder.shared.processer.performOperator(imageOperator: ope)
+        
+        dismiss(animated: true, completion: nil)
     }
 }
