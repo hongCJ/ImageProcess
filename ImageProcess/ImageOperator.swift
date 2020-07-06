@@ -8,24 +8,53 @@
 
 import Accelerate
 import simd
+import UIKit
 
-struct BufferProvider: ImageOperator {
+enum ImageSource {
+    case name(name: String, type: String)
+    case image(img: UIImage)
+}
+
+struct ImageProvider: ImageOperator {
     var debugDescription: String {
-        return "set image source buffer"
+        switch source {
+        case .image(img: _):
+            return "set image with name"
+        case let .name(name: name, type: type):
+            return "set image with name \(name) \(type)"
+        }
+        
     }
-    let image: CGImage
+    
+    var provider: Bool {
+        return true
+    }
+    
+    let source: ImageSource
+    
     
     func operateImage(buffer: inout vImage_Buffer, format: inout vImage_CGImageFormat) -> ImageResult {
-        guard let imageFormat = vImage_CGImageFormat(cgImage: image) else {
+        var cg: CGImage?
+        switch source {
+        case let .image(img: img):
+            cg = img.cgImage
+        case let .name(name: name, type: type):
+            let img = UIImage.loadFromBundle(name: name, type: type)
+            cg = img?.cgImage
+        }
+        guard let cgImage = cg else {
+            return .error("load image errpr")
+        }
+        
+        guard let imageFormat = vImage_CGImageFormat(cgImage: cgImage) else {
             return .error("get format err")
         }
-        guard let imageBuffer = try? vImage_Buffer(cgImage: image, format: imageFormat) else {
+        guard let imageBuffer = try? vImage_Buffer(cgImage: cgImage, format: imageFormat) else {
             return .error("get image buffer err")
         }
         buffer = imageBuffer
         format = imageFormat
         return .success
-        
     }
 }
 
@@ -77,7 +106,7 @@ struct TranslateOperator: ImageOperator {
     let y: Int
     
     func operateImage(buffer: inout vImage_Buffer, format: inout vImage_CGImageFormat) -> ImageResult {
-        var transform = vImage_AffineTransform(a: 1, b: 0, c: 0, d: 1, tx: Float(x), ty: Float(y))
+        var transform = vImage_AffineTransform(a: 1, b: 0, c: 0, d: 1, tx: Float(x), ty: -Float(y))
         
         guard var destinationBuffer = try? vImage_Buffer(width: Int(buffer.width) + x, height: Int(buffer.height) + y, bitsPerPixel: format.bitsPerPixel) else {
             return ImageMakeBufferError
@@ -114,9 +143,9 @@ struct RotateOperator: ImageOperator {
         let hh = height / 2
         
         
-        let forwardMatrix = simd_matrix(simd_float3(arrayLiteral: 1, 0, -hw), simd_float3(arrayLiteral: 0, -1, hh), simd_float3(arrayLiteral: 0, 0, 1))
+        let forwardMatrix = simd_matrix(simd_float3(arrayLiteral: 1, 0, -hw), simd_float3(arrayLiteral: 0, -1, -hh), simd_float3(arrayLiteral: 0, 0, 1))
         
-        let backMatrix = simd_matrix(simd_float3(arrayLiteral: 1, 0, hw), simd_float3(arrayLiteral: 0, -1, hh), simd_float3(arrayLiteral: 0, 0, 1))
+        let backMatrix = simd_matrix(simd_float3(arrayLiteral: 1, 0, hw), simd_float3(arrayLiteral: 0, -1, -hh), simd_float3(arrayLiteral: 0, 0, 1))
         
         let transforMatrix = simd_matrix(simd_float3(x: cosValue, y: sinValue, z: 0), simd_float3(x: -sinValue, y: cosValue, z: 0), simd_float3(x: 0, y: 0, z: 1))
         
@@ -125,10 +154,11 @@ struct RotateOperator: ImageOperator {
         let c0 = finaleMatrix.columns.0
         let c1 = finaleMatrix.columns.1
         
-        var bufferTranform = vImage_AffineTransform(a: c0.x, b: c1.x, c: c0.y, d: c1.y, tx: c0.z, ty: c1.z)
+//        var bufferTranform = vImage_AffineTransform(a: c0.x, b: c1.x, c: c0.y, d: c1.y, tx: c0.z, ty: c1.z)
+        var bufferTranform = vImage_AffineTransform(a: 1, b: 0, c: 0, d: 1, tx: 30, ty: 30)
         
-        let new_w = ceil(abs(width * cosValue) + abs(height * sinValue));
-        let new_h = ceil(abs(width * cosValue) + abs(height * sinValue));
+        let new_w = buffer.width //ceil(abs(width * cosValue) + abs(height * sinValue));
+        let new_h = buffer.height//ceil(abs(width * cosValue) + abs(height * sinValue));
         
         guard var destinationBuffer = try? vImage_Buffer(width: Int(new_w), height: Int(new_h), bitsPerPixel: format.bitsPerPixel) else {
             return ImageMakeBufferError
@@ -141,75 +171,6 @@ struct RotateOperator: ImageOperator {
         }
         buffer = destinationBuffer
         return .success
-    }
-}
-
-struct BlurInPlaceOperator: ImageOperator {
-    var debugDescription: String {
-        return "in place blur with  rect: \(rect) matrix: \(matrix)"
-    }
-    let rect: CGRect
-    let matrix: [Float]
-    
-    func operateImage(buffer: inout vImage_Buffer, format: inout vImage_CGImageFormat) -> ImageResult {
-        assert(matrix.count == 16, "unsupport matrix")
-        guard var buffer = buffer.subBuffer(rect: rect, format: format) else {
-            return .error("out of rect")
-        }
-        let divisor: Int32 = 0x1000
-        
-        let desaturationMatrix = matrix.map {
-            return Int16($0 * Float(divisor))
-        }
-        let err = vImageMatrixMultiply_ARGB8888(&buffer,
-                                                &buffer,
-                                                desaturationMatrix,
-                                                divisor,
-                                                nil, nil,
-                                                vImage_Flags(kvImageNoFlags))
-        guard err == kvImageNoError  else {
-            return .error("\(err)")
-        }
-        
-        
-        return .success
-    }
-}
-
-struct BlurOutPlaceOperator: ImageOperator {
-    var debugDescription: String {
-        return "BlurOutPlaceOperator with \(rect) \(width)"
-    }
-    let rect: CGRect
-    let width: Float
-    
-    func operateImage(buffer: inout vImage_Buffer, format: inout vImage_CGImageFormat) -> ImageResult {
-        guard var destinationBuffer = try? vImage_Buffer(width: Int(buffer.width), height: Int(buffer.height), bitsPerPixel: format.bitsPerPixel) else {
-            return ImageMakeBufferError
-        }
-        let bytesPerPix = Int(format.bitsPerPixel / format.bitsPerComponent)
-        withUnsafePointer(to: &buffer) { (ptr) -> Void in
-            vImageCopyBuffer(ptr, &destinationBuffer, bytesPerPix, vImage_Flags(kvImageNoFlags))
-        }
-        
-        guard var blurDestination = destinationBuffer.subBuffer(rect: rect, format: format) else {
-            destinationBuffer.free()
-            return ImageMakeBufferError
-        }
-        
-        var err = kvImageNoError
-        withUnsafePointer(to: &destinationBuffer) { (ptr) -> Void in
-            let blurDiameter = UInt32(5 * 2 + 1)
-            err = vImageTentConvolve_ARGB8888(ptr, &blurDestination, nil, vImagePixelCount(rect.origin.x), vImagePixelCount(rect.origin.y), blurDiameter, blurDiameter, [0], vImage_Flags(kvImageTruncateKernel))
-        }
-        
-        guard err == kvImageNoError else {
-            destinationBuffer.free()
-            return .error("\(err)")
-        }
-        buffer = destinationBuffer
-        return .success
-        
     }
 }
 

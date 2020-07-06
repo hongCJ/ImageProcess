@@ -27,7 +27,15 @@ extension vImage_Buffer {
         
         let start = Int(rect.origin.y) * rowBytes + Int(rect.origin.x) * bytesPerPixel
         
-        let result = vImage_Buffer(data: data.advanced(by: start), height: vImagePixelCount(rect.height), width: vImagePixelCount(rect.width), rowBytes: rowBytes)
-        return result
+        let blurDestination = vImage_Buffer(data: data.advanced(by: start),
+                                            height: vImagePixelCount(rect.height),
+                                            width: vImagePixelCount(rect.width),
+                                            rowBytes: rowBytes)
+        
+        return blurDestination
+    }
+    
+    func isGray() -> Bool {
+        return rowBytes / Int(width) == 1
     }
 }

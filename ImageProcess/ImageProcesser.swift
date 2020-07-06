@@ -19,6 +19,13 @@ let ImageMakeBufferError = ImageResult.error("fail create buffer")
 
 protocol ImageOperator: CustomDebugStringConvertible {
     func operateImage(buffer: inout vImage_Buffer, format: inout vImage_CGImageFormat) -> ImageResult
+    var provider: Bool {get}
+}
+
+extension ImageOperator {
+    var provider: Bool {
+        return false
+    }
 }
 
 
@@ -40,7 +47,7 @@ class ImageProcesser {
 
     func performOperator(imageOperator: ImageOperator) {
         // not good
-        if type(of: imageOperator) == BufferProvider.self {
+        if imageOperator.provider {
             if sourceFormat == nil {
                 sourceFormat = vImage_CGImageFormat(bitsPerComponent: 8, bitsPerPixel: 32, colorSpace: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.first.rawValue))
             }
