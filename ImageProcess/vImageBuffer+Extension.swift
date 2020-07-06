@@ -8,6 +8,37 @@
 
 import Accelerate
 import simd
+import UIKit
+
+enum ImageSource {
+    enum FileType: String {
+        case jpeg
+        case png
+        case jpg
+    }
+    
+    case name(name: String, type: FileType)
+    case image(img: UIImage)
+    case asset(name: String)
+}
+
+extension ImageSource {
+    var cgImage: CGImage? {
+       var cg: CGImage?
+        switch self {
+        case let .image(img: img):
+            cg = img.cgImage
+        case let .name(name: name, type: type):
+            let img = UIImage.loadFromBundle(name: name, type: type.rawValue)
+            cg = img?.cgImage
+        case let .asset(name: name):
+            let img = UIImage(named: name)
+            cg = img?.cgImage
+        }
+        return cg
+    }
+}
+
 
 extension Array where Element == Float {
     func simd3() -> simd_float3 {

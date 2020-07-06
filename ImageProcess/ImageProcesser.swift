@@ -10,6 +10,7 @@ import UIKit
 import Accelerate
 
 
+
 enum ImageResult {
     case success
     case error(String)
@@ -25,6 +26,36 @@ protocol ImageOperator: CustomDebugStringConvertible {
 extension ImageOperator {
     var provider: Bool {
         return false
+    }
+}
+
+struct ChainOperator: ImageOperator {
+    var debugDescription: String {
+        return "ChainOperator"
+    }
+    var provider: Bool {
+        let arr = operators.filter {
+            $0.provider
+        }
+        
+        return !arr.isEmpty
+    }
+    var operators: [ImageOperator]
+    func operateImage(buffer: inout vImage_Buffer, format: inout vImage_CGImageFormat) -> ImageResult {
+        guard !operators.isEmpty else {
+            return .error("empty operator")
+        }
+        var resultBuffer = buffer
+        var resultFormat = format
+        for op in operators {
+            let err = op.operateImage(buffer: &resultBuffer, format: &resultFormat)
+            if case ImageResult.error(_) = err {
+                return err
+            }
+        }
+        buffer = resultBuffer
+        format = resultFormat
+        return .success
     }
 }
 

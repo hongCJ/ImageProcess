@@ -56,9 +56,93 @@ struct AlphaOperator: ImageOperator {
     var debugDescription: String {
         return "alpha ope\rator"
     }
+    var next: ImageOperator?
+    
+    var otherImage: ImageSource
+    let isTop: Bool
     
     func operateImage(buffer: inout vImage_Buffer, format: inout vImage_CGImageFormat) -> ImageResult {
-//        vImageAlphaBlend_ARGB8888(<#T##srcTop: UnsafePointer<vImage_Buffer>##UnsafePointer<vImage_Buffer>#>, <#T##srcBottom: UnsafePointer<vImage_Buffer>##UnsafePointer<vImage_Buffer>#>, <#T##dest: UnsafePointer<vImage_Buffer>##UnsafePointer<vImage_Buffer>#>, <#T##flags: vImage_Flags##vImage_Flags#>)
+        guard let image = otherImage.cgImage else { return .error("load image error") }
+        guard let otherFormat = vImage_CGImageFormat(cgImage: image) else {
+            return .error("load format err")
+        }
+        guard var otherBuffer = try? vImage_Buffer(cgImage: image, format: otherFormat) else {
+            return .error("load buffer err")
+        }
+        
+        guard var destinationBuffer = try? vImage_Buffer(width: Int(buffer.width), height: Int(buffer.height), bitsPerPixel: format.bitsPerPixel) else {
+            otherBuffer.free()
+            return ImageMakeBufferError
+        }
+        
+        vImageAlphaBlend_ARGB8888(&otherBuffer, &buffer, &destinationBuffer, vImage_Flags(kvImageNoFlags))
+        buffer = destinationBuffer
+        return .success
+    }
+}
+
+struct HistogramOperator: ImageOperator {
+    var debugDescription: String {
+        return "HistogramOperator"
+    }
+    
+    let otherImage: ImageSource
+    func operateImage(buffer: inout vImage_Buffer, format: inout vImage_CGImageFormat) -> ImageResult {
+        guard let cgImage = otherImage.cgImage else {
+            return .error("load image errpr")
+        }
+        guard let otherFormat = vImage_CGImageFormat(cgImage: cgImage) else {
+            return .error("load format err")
+        }
+        guard var otherBuffer = try? vImage_Buffer(cgImage: cgImage, format: otherFormat) else {
+            return .error("load buffer err")
+        }
+        var histogramBinZero = [vImagePixelCount](repeating: 0, count: 256)
+        var histogramBinOne = [vImagePixelCount](repeating: 0, count: 256)
+        var histogramBinTwo = [vImagePixelCount](repeating: 0, count: 256)
+        var histogramBinThree = [vImagePixelCount](repeating: 0, count: 256)
+        histogramBinZero.withUnsafeMutableBufferPointer { zeroPtr in
+            histogramBinOne.withUnsafeMutableBufferPointer { onePtr in
+                histogramBinTwo.withUnsafeMutableBufferPointer { twoPtr in
+                    histogramBinThree.withUnsafeMutableBufferPointer { threePtr in
+                        
+                        var histogramBins = [zeroPtr.baseAddress, onePtr.baseAddress,
+                                             twoPtr.baseAddress, threePtr.baseAddress]
+                        
+                        histogramBins.withUnsafeMutableBufferPointer { histogramBinsPtr in
+                            let error = vImageHistogramCalculation_ARGB8888(&otherBuffer,
+                                                                            histogramBinsPtr.baseAddress!,
+                                                                            vImage_Flags(kvImageNoFlags))
+                            
+                            guard error == kvImageNoError else {
+                                fatalError("Error calculating histogram: \(error)")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        histogramBinZero.withUnsafeBufferPointer { zeroPtr in
+            histogramBinOne.withUnsafeBufferPointer { onePtr in
+                histogramBinTwo.withUnsafeBufferPointer { twoPtr in
+                    histogramBinThree.withUnsafeBufferPointer { threePtr in
+                        
+                        var histogramBins = [zeroPtr.baseAddress, onePtr.baseAddress,
+                                             twoPtr.baseAddress, threePtr.baseAddress]
+                        histogramBins.withUnsafeMutableBufferPointer { histogramBinsPtr in
+                            let error = vImageHistogramSpecification_ARGB8888(&buffer,
+                                                                              &buffer,
+                                                                              histogramBinsPtr.baseAddress!,
+                                                                              vImage_Flags(kvImageLeaveAlphaUnchanged))
+                            guard error == kvImageNoError else {
+                                fatalError("Error specifying histogram: \(error)")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         return .success
     }
 }

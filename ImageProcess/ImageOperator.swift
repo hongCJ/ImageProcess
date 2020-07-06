@@ -10,11 +10,6 @@ import Accelerate
 import simd
 import UIKit
 
-enum ImageSource {
-    case name(name: String, type: String)
-    case image(img: UIImage)
-}
-
 struct ImageProvider: ImageOperator {
     var debugDescription: String {
         switch source {
@@ -22,6 +17,8 @@ struct ImageProvider: ImageOperator {
             return "set image with name"
         case let .name(name: name, type: type):
             return "set image with name \(name) \(type)"
+        case .asset(name: let name):
+            return "set image with name \(name)"
         }
         
     }
@@ -34,15 +31,7 @@ struct ImageProvider: ImageOperator {
     
     
     func operateImage(buffer: inout vImage_Buffer, format: inout vImage_CGImageFormat) -> ImageResult {
-        var cg: CGImage?
-        switch source {
-        case let .image(img: img):
-            cg = img.cgImage
-        case let .name(name: name, type: type):
-            let img = UIImage.loadFromBundle(name: name, type: type)
-            cg = img?.cgImage
-        }
-        guard let cgImage = cg else {
+        guard let cgImage = source.cgImage else {
             return .error("load image errpr")
         }
         
