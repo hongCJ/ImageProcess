@@ -161,9 +161,6 @@ struct RotateOperator: ImageOperator {
         
         var bufferTranform = vImage_AffineTransform(a: c0.x, b: c1.x, c: c0.y, d: c1.y, tx: c0.z, ty: c1.z)
         
-       
-        
-        
         guard var destinationBuffer = try? vImage_Buffer(width: Int(new_w), height: Int(new_h), bitsPerPixel: format.bitsPerPixel) else {
             return ImageMakeBufferError
         }

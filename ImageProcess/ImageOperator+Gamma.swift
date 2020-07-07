@@ -74,6 +74,8 @@ struct AlphaOperator: ImageOperator {
             otherBuffer.free()
             return ImageMakeBufferError
         }
+        print("top: \(otherBuffer.width) \(otherBuffer.height)")
+        print("bottom: \(buffer.width) \(buffer.height)")
         
         vImageAlphaBlend_ARGB8888(&otherBuffer, &buffer, &destinationBuffer, vImage_Flags(kvImageNoFlags))
         buffer = destinationBuffer
@@ -143,6 +145,27 @@ struct HistogramOperator: ImageOperator {
             }
         }
 
+        return .success
+    }
+}
+
+struct CropOperator: ImageOperator {
+    var debugDescription: String {
+        return "CropOperator rect:\(rect)"
+    }
+    let rect: CGRect
+    func operateImage(buffer: inout vImage_Buffer, format: inout vImage_CGImageFormat) -> ImageResult {
+        guard buffer.isSubRect(rect: rect) else {
+            return .error("out of rect")
+        }
+        let bytesPerPix = format.bitsPerPixel / format.bitsPerComponent
+        let start = Int(rect.origin.y) * Int(buffer.rowBytes) + Int(rect.origin.x) * Int(bytesPerPix)
+                      
+        let blurDestination = vImage_Buffer(data: buffer.data.advanced(by: start),
+                                            height: vImagePixelCount(rect.height),
+                                            width: vImagePixelCount(rect.width),
+                                            rowBytes: buffer.rowBytes)
+        buffer = blurDestination
         return .success
     }
 }

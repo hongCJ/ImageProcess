@@ -13,12 +13,18 @@ class ConfiViewController: UIViewController {
     var data: [ImageOperator] = []
     override func viewDidLoad() {
         super.viewDidLoad()
-        data.append(ImageProvider(source: ImageSource.name(name: "color", type: .jpg)))
-        data.append(ImageProvider(source: ImageSource.name(name: "oip2", type: .jpeg)))
-        data.append(ImageProvider(source: ImageSource.name(name: "OIP", type: .jpeg)))
-        data.append(HistogramOperator(otherImage: .name(name: "color", type: .jpg)))
-        data.append(AlphaOperator(otherImage: .name(name: "OIP", type: .jpeg), isTop: true))
-        data.append(ChainOperator(operators: [ImageProvider(source: ImageSource.name(name: "color", type: .jpg)), GrayOperator()]))
+        let s1 = ImageSource.name(name: "color", type: .jpg)
+        let s2 = ImageSource.name(name: "oip2", type: .jpeg)
+        let s3 = ImageSource.name(name: "OIP", type: .jpeg)
+        data.append(ImageProvider(source: s1))
+        data.append(ImageProvider(source: s2))
+        data.append(ImageProvider(source: s3))
+        
+        data.append(ChainOperator(operators: [ImageProvider(source: s2), CropOperator(rect: CGRect(x: 50, y: 50, width: 200, height: 100))]))
+        
+//        data.append(HistogramOperator(otherImage: .name(name: "color", type: .jpg)))
+//        data.append(AlphaOperator(otherImage: .name(name: "OIP", type: .jpeg), isTop: true))
+//        data.append(ChainOperator(operators: [ImageProvider(source: ImageSource.name(name: "color", type: .jpg)), GrayOperator()]))
 //        data.append(GrayOperator())
 //        data.append(RotateOperator(angle: 45.0))
 //        data.append(TranslateOperator(x: 30, y: 40))
@@ -27,7 +33,7 @@ class ConfiViewController: UIViewController {
 //        data.append(contentsOf: [BrightnessOperator(light: 6), BrightnessOperator(light: -7)])
 //        data.append(SharpeOperator())
 //        data.append(BoxBlurOperator(kernelLength: 5))
-//        data.append(TentBlurOperator(kernel: 3))
+//        data.append(TentBlurOperator(kernel: 5))
 //        let kernel2d: [Int16] = [
 //            0,    0,    0,      0,      0,      0,      0,
 //            0,    2025, 6120,   8145,   6120,   2025,   0,

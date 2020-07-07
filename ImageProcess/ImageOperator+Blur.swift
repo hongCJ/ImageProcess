@@ -21,20 +21,20 @@ struct BoxBlurOperator: ImageOperator {
         guard var destinationBuffer = try? vImage_Buffer(width: width, height: height, bitsPerPixel: format.bitsPerPixel) else {
             return ImageMakeBufferError
         }
-        //        let bytesPerPix = Int(format.bitsPerPixel / format.bitsPerComponent)
-        //        withUnsafePointer(to: &buffer) { (ptr) -> Void in
-        //            vImageCopyBuffer(ptr, &destinationBuffer, bytesPerPix, vImage_Flags(kvImageNoFlags))
-        //        }
-        let rect = CGRect.zero //CGRect(x: 0, y: 0, width: width, height: height)
-        //        guard var blurDestination = destinationBuffer.subBuffer(rect: rect, format: format) else {
-        //            destinationBuffer.free()
-        //            return ImageMakeBufferError
-        //        }
+        let bytesPerPix = Int(format.bitsPerPixel / format.bitsPerComponent)
+        withUnsafePointer(to: &buffer) { (ptr) -> Void in
+            vImageCopyBuffer(ptr, &destinationBuffer, bytesPerPix, vImage_Flags(kvImageNoFlags))
+        }
+        let rect = CGRect(x: 0, y: 0, width: width / 2, height: height / 2)
+        guard var blurDestination = destinationBuffer.subBuffer(rect: rect, format: format) else {
+            destinationBuffer.free()
+            return ImageMakeBufferError
+        }
         var err = kvImageNoError
         if buffer.isGray() {
             err = vImageBoxConvolve_Planar8(&buffer, &destinationBuffer, nil, 0, 0, kernelLength, kernelLength, 0, vImage_Flags(kvImageEdgeExtend))
         } else {
-            err = vImageBoxConvolve_ARGB8888(&buffer, &destinationBuffer, nil, vImagePixelCount(rect.origin.x), vImagePixelCount(rect.origin.y), kernelLength, kernelLength, nil, vImage_Flags(kvImageEdgeExtend))
+            err = vImageBoxConvolve_ARGB8888(&buffer, &blurDestination, nil, vImagePixelCount(rect.origin.x), vImagePixelCount(rect.origin.y), kernelLength, kernelLength, nil, vImage_Flags(kvImageEdgeExtend))
         }
         guard err == kvImageNoError else {
             return .error("\(err)")
@@ -55,14 +55,35 @@ struct TentBlurOperator: ImageOperator {
     func operateImage(buffer: inout vImage_Buffer, format: inout vImage_CGImageFormat) -> ImageResult {
         let width = Int(buffer.width)
         let height = Int(buffer.height)
+        
+        let quarter_w = Int(buffer.width / 4)
+        let quarter_h = Int(buffer.height / 4)
+        
+
+        
         guard var destinationBuffer = try? vImage_Buffer(width: width, height: height, bitsPerPixel: format.bitsPerPixel) else {
             return ImageMakeBufferError
         }
+        
+        withUnsafePointer(to: &buffer) { (ptr) -> Void in
+            vImageCopyBuffer(ptr, &destinationBuffer, 4, vImage_Flags(kvImageNoFlags))
+        }
+        
+        let start = quarter_h * destinationBuffer.rowBytes + quarter_w * 4
+               
+       var blurDestination = vImage_Buffer(data: destinationBuffer.data.advanced(by: start),
+                                           height: vImagePixelCount(quarter_h * 2),
+                                           width: vImagePixelCount(quarter_w * 2),
+                                           rowBytes: destinationBuffer.rowBytes)
+
         var err = kvImageNoError
         if buffer.isGray() {
             err = vImageTentConvolve_Planar8(&buffer, &destinationBuffer, nil, 0, 0, kernel, kernel, 0, vImage_Flags(kvImageTruncateKernel))
         } else {
-            err = vImageTentConvolve_ARGB8888(&buffer, &destinationBuffer, nil, 0, 0, kernel, kernel, nil, vImage_Flags(kvImageTruncateKernel))
+            withUnsafePointer(to: &buffer) { (ptr) -> Void in
+              err = vImageTentConvolve_ARGB8888(ptr, &blurDestination, nil, vImagePixelCount(quarter_w), vImagePixelCount(quarter_h), kernel, kernel, [0], vImage_Flags(kvImageTruncateKernel))
+            }
+            
         }
         guard err == kvImageNoError else {
             return .error("\(err)")
